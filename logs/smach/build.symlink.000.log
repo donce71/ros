@@ -1,0 +1,4 @@
+Symlinking /home/zaibs/mybot_ws2/devel/share/smach/cmake/smachConfig.cmake
+Symlinking /home/zaibs/mybot_ws2/devel/share/smach/cmake/smachConfig-version.cmake
+Symlinking /home/zaibs/mybot_ws2/devel/lib/python2.7/dist-packages/smach/__init__.py
+Symlinking /home/zaibs/mybot_ws2/devel/lib/pkgconfig/smach.pc

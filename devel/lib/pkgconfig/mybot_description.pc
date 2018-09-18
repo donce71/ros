@@ -1,0 +1,1 @@
+/home/zaibs/mybot_ws2/devel/.private/mybot_description/lib/pkgconfig/mybot_description.pc

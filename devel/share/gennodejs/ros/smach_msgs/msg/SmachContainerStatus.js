@@ -1,0 +1,1 @@
+/home/zaibs/mybot_ws2/devel/.private/smach_msgs/share/gennodejs/ros/smach_msgs/msg/SmachContainerStatus.js

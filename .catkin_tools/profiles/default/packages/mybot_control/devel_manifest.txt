@@ -1,0 +1,4 @@
+mybot_control
+/home/zaibs/mybot_ws2/devel/.private/mybot_control/share/mybot_control/cmake/mybot_controlConfig.cmake /home/zaibs/mybot_ws2/devel/share/mybot_control/cmake/mybot_controlConfig.cmake
+/home/zaibs/mybot_ws2/devel/.private/mybot_control/share/mybot_control/cmake/mybot_controlConfig-version.cmake /home/zaibs/mybot_ws2/devel/share/mybot_control/cmake/mybot_controlConfig-version.cmake
+/home/zaibs/mybot_ws2/devel/.private/mybot_control/lib/pkgconfig/mybot_control.pc /home/zaibs/mybot_ws2/devel/lib/pkgconfig/mybot_control.pc

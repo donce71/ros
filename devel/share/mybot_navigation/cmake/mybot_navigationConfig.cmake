@@ -1,0 +1,1 @@
+/home/zaibs/mybot_ws2/devel/.private/mybot_navigation/share/mybot_navigation/cmake/mybot_navigationConfig.cmake

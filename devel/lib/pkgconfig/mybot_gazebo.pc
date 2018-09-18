@@ -1,0 +1,1 @@
+/home/zaibs/mybot_ws2/devel/.private/mybot_gazebo/lib/pkgconfig/mybot_gazebo.pc
