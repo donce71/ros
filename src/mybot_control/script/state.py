@@ -20,16 +20,16 @@ class Foo(smach.State):
         if self.counter < 10:
             userdata.foo_counter_out = userdata.foo_counter_in + 1
             self.counter += 1
-            time.sleep(2) 
+            time.sleep(5) 
             return 'outcome1'
         else:
-            return 'outcome2'
+            return 'outcome1'
 
 
 # define state Bar
 class Bar(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['outcome1'],
+        smach.State.__init__(self, outcomes=['outcome1', 'error'],
                                    input_keys=['bar_counter_in'],
                                    output_keys=['bar_counter_out'])
         self.counter = 0
@@ -39,16 +39,16 @@ class Bar(smach.State):
         userdata.bar_counter_out = userdata.bar_counter_in + 1
         time.sleep(1) 
         self.counter += 1
-        if self.counter == 2:
+        if self.counter < 10:
             return 'outcome1'
             self.counter = 0
         else: 
-            return 'outcome1'
+            return 'error'
 
         # define state Bar
 class Work(smach.State):
     def __init__(self):
-        smach.State.__init__(self, outcomes=['outcome3','outcomeERROR'])
+        smach.State.__init__(self, outcomes=['outcome3'])
         self.counter = 0
 
     def execute(self, userdata):
@@ -58,17 +58,8 @@ class Work(smach.State):
             time.sleep(2) 
             return 'outcome3'
         else:
-            return 'outcomeERROR'
-
- # State Bas
-class SoneSUB(smach.State):
-    def __init__(self):
-        smach.State.__init__(self, outcomes=['outcome3'])
-      
-    def execute(self, userdata):
-        time.sleep(4) 
-        return 'outcome3'
-        
+            return 'outcome3'
+     
 
 
 # main
@@ -76,41 +67,41 @@ def main():
     rospy.init_node('smach_example_state_machine')
 
     # Create a SMACH state machine
-    sm_top = smach.StateMachine(outcomes=['outcome5'])
-    sm_top.userdata.sm_counter = 0
-
+    sm_top = smach.StateMachine(outcomes=['END1'])  
+  
     # Open the container
     with sm_top:
         # Add states to the container
         smach.StateMachine.add('WORK', Work(), 
-                               transitions={'outcome3':'SUB',
-                                        'outcomeERROR':'SONE_SUB'})   
+                               transitions={'outcome3':'CON'})   
 
-        smach.StateMachine.add('SONE_SUB', SoneSUB(), 
-                               transitions={'outcome3':'outcome5'})   
+        sm_con = smach.Concurrence(outcomes = ['outcome1', 'outcome2','ENDerror'],
+                                   default_outcome = 'outcome1',
+                                   outcome_map = {'outcome2':{'FOO':'outcome1',
+                                                              'BAR':'outcome1'},
+                                                   'ENDerror':{'BAR':'error'}})
 
-
-        sm_sub=smach.StateMachine(outcomes=['outcome4','outcome7'])
-        sm_sub.userdata.sm_sub_counter = 0
+        sm_con.userdata.sm_sub_counter = 0        
+        sm_con.userdata.sm_sub_counter2 = 0                                
+                        
 
         #open sub container
-        with sm_sub:
+        with sm_con:
             # Add states to the container
-            smach.StateMachine.add('FOO', Foo(), 
-                               transitions={'outcome1':'BAR', 
-                                            'outcome2':'outcome4'},
-                               remapping={'foo_counter_in':'sm_sub_counter',
-                                          'foo_counter_out':'sm_sub_counter'})
+            smach.Concurrence.add('FOO', Foo(), 
+                                    remapping={'foo_counter_in':'sm_sub_counter',
+                                             'foo_counter_out':'sm_sub_counter'})
 
-            smach.StateMachine.add('BAR', Bar(), 
-                               transitions={'outcome1':'FOO'},
-                                remapping={'bar_counter_in':'sm_sub_counter',
-                                           'bar_counter_out':'sm_sub_counter'})    
+            smach.Concurrence.add('BAR', Bar(), 
+                                remapping={'bar_counter_in':'sm_sub_counter2',
+                                           'bar_counter_out':'sm_sub_counter2'})    
 
-        smach.StateMachine.add('SUB',sm_sub,
-                                transitions={'outcome4':'outcome5',
-                                             'outcome7':'WORK'})                
-                               
+        smach.StateMachine.add('CON', sm_con,
+                                  transitions={'outcome1':'CON',
+                                               'outcome2':'CON',
+                                               'ENDerror':'END1'})             
+
+                                   
 
    # Create and start the introspection server
     sis = smach_ros.IntrospectionServer('server_name', sm_top, '/SM_ROOT')
